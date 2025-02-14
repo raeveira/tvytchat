@@ -28,7 +28,7 @@ export class TwitchController {
             return {message: "User has no twitch token", code: 404};
         }
 
-        const decryptedAccessToken = this.cryptConfig.decrypt(accessToken?.twitchToken);
+        const decryptedAccessToken = await this.cryptConfig.decrypt(accessToken?.twitchToken);
 
 
         const twitchClientId = this.envConfig.get("TWITCH_CLIENT_ID");
