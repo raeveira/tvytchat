@@ -17,7 +17,7 @@ export default function Page() {
       throw new Error('Missing required parameters');
     }
 
-    const newUrl = `http://localhost:3031/api/auth/twitch-redirect?access_token=${access_token}&token_type=${token_type}&scope=${scope}`;
+    const newUrl = `https://tvytapi.raeveira.nl/api/auth/twitch-redirect?access_token=${access_token}&token_type=${token_type}&scope=${scope}`;
 
     // Redirect to the new URL
     router.push(newUrl);

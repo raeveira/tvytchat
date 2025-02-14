@@ -51,10 +51,10 @@ export default function Page()  {
             <div className="text-[2rem] font-bold text-center flex-1">
                 <div>
                     Auth:
-                    <a href={'http://localhost:3031/api/auth/twitch'} className={'text-blue-500 hover:underline'}>
+                    <a href={'https://tvytapi.raeveira.nl/api/auth/twitch'} className={'text-blue-500 hover:underline'}>
                         Twitch
                     </a>
-                    <a href={'http://localhost:3031/api/auth/youtube'} className={'text-red-500 hover:underline'}>
+                    <a href={'https://tvytapi.raeveira.nl/api/auth/youtube'} className={'text-red-500 hover:underline'}>
                         YouTube
                     </a>
                 </div>

@@ -3,7 +3,7 @@ import {io} from 'socket.io-client';
 export const connect = () => {
     console.log('Connecting to the server...');
 
-     const socket = io('http://localhost:3031', {
+     const socket = io('https://tvytapi.raeveira.nl', {
         reconnection: true,
         reconnectionAttempts: Infinity,
         reconnectionDelay: 1000,

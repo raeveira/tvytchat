@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
 
     // Validate token with backend API for all other routes
     try {
-        const response = await fetch('http://localhost:3031/api/auth/check-token', {
+        const response = await fetch('https://tvytapi.raeveira.nl/api/auth/check-token', {
             method: 'GET',
             headers: {
                 'Cookie': request.headers.get('cookie') || ''

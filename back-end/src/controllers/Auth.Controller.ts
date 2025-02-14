@@ -80,7 +80,7 @@ export class AuthController {
             //@ts-expect-error
             await this.db.storeTwitchToken(authenticated.user?.username, encryptedAccessToken);
 
-            res.redirect('http://localhost:3030/dashboard?auth=success');
+            res.redirect('https://tvyt.raeveira.nl/dashboard?auth=success');
         } catch (error) {
             console.error('Error handling redirect:', error);
             res.status(500).send('Internal Server Error');
@@ -126,7 +126,7 @@ export class AuthController {
             //@ts-expect-error
             await this.db.storeYoutubeTokens(authenticated.user?.username, encryptedAccessToken, encryptedRefreshToken);
 
-            res.redirect('http://localhost:3030/dashboard?auth=success');
+            res.redirect('https://tvyt.raeveira.nl/dashboard?auth=success');
         } catch (error) {
             console.error('Error handling redirect:', error);
             res.status(500).send('Internal Server Error');
