@@ -25,7 +25,7 @@ export default function Page() {
 
     useEffect(() => {
         const requestChat = async () => {
-            const response = await fetch(`http://localhost:3000/api/retrieve-chat?chatId=${chatId}`, {
+            const response = await fetch(`http://localhost:3031/api/retrieve-chat?chatId=${chatId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

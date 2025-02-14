@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     return new Response('Missing required parameters', { status: 400 });
   }
 
-  const newUrl = `http://localhost:3000/api/auth/youtube-redirect?code=${code}&scope=${scope}`;
+  const newUrl = `http://localhost:3031/api/auth/youtube-redirect?code=${code}&scope=${scope}`;
 
   // Redirect to the new URL
   return NextResponse.redirect(newUrl, 307);

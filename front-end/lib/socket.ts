@@ -3,7 +3,7 @@ import {io} from 'socket.io-client';
 export const connect = () => {
     console.log('Connecting to the server...');
 
-     const socket = io('http://localhost:3000', {
+     const socket = io('http://localhost:3031', {
         reconnection: true,
         reconnectionAttempts: Infinity,
         reconnectionDelay: 1000,
