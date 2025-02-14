@@ -42,7 +42,7 @@ const twitchController = new TwitchController(io, db, envConfig, cryptConfig);
 const youtubeController = new YoutubeController(io, db, envConfig, cryptConfig);
 const mainController = new MainController(twitchController, youtubeController, authConfig, io, db);
 const authRouter = new AuthRouter(authController);
-const mainRouter = new MainRouter(mainController, authRouter, twitchController, youtubeController);
+const mainRouter = new MainRouter(mainController, authRouter);
 
 app.use(express.json());
 app.use(cookieParser());
