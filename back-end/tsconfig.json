@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@controllers/*": [
+        "controllers/*"
+      ],
+      "@services/*": [
+        "services/*"
+      ],
+      "@routes/*": [
+        "routes/*"
+      ],
+      "@database/*": [
+        "database/*"
+      ],
+      "@config/*": [
+        "config/*"
+      ]
+    },
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ESNext",
+    "esModuleInterop": true,
+    "strict": true
+  },
+  "include": [
+    "**/*.ts", "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "ts-node": {
+    "esm": true,
+    "files": true
+  }
+}
