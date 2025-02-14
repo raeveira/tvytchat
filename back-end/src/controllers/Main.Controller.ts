@@ -61,7 +61,7 @@ export class MainController {
 
             sessionUsername = user.username;
         } else {
-            const authResponse = await this.authConfig.checkAuth(req, res);
+            const authResponse = await this.authConfig.checkAuth(req);
 
             console.log("Auth response: ", authResponse);
 
@@ -106,14 +106,14 @@ export class MainController {
         let twitchresponse = false;
         let youtuberesponse = false;
 
-        await this.twitchController.getStreamMessages(chatId, sessionUsername, res).then((data) => {
+        await this.twitchController.getStreamMessages(chatId, sessionUsername).then((data) => {
             console.log("Twitch Response:", data);
             if (data.code == 200) {
                 twitchresponse = true;
             }
         });
 
-        await this.youtubeController.getStreamMessages(chatId, sessionUsername, res).then((data) => {
+        await this.youtubeController.getStreamMessages(chatId, sessionUsername).then((data) => {
             console.log("Youtube Response:", data);
             if (data.code == 200) {
                 youtuberesponse = true;

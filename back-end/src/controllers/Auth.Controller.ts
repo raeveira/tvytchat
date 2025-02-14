@@ -37,7 +37,7 @@ export class AuthController {
     }
 
     public async twitchAuth(req: Request, res: Response) {
-        const authenticated = await this.authConfig.checkAuth(req, res);
+        const authenticated = await this.authConfig.checkAuth(req);
 
         if (!authenticated.isAuthenticated) {
             return res.status(authenticated.code).send(authenticated.message);
@@ -48,7 +48,7 @@ export class AuthController {
     }
 
     public async youtubeAuth(req: Request, res: Response) {
-        const authenticated = await this.authConfig.checkAuth(req, res);
+        const authenticated = await this.authConfig.checkAuth(req);
 
         if (!authenticated.isAuthenticated) {
             return res.status(authenticated.code).send(authenticated.message);
@@ -66,7 +66,7 @@ export class AuthController {
             return res.status(400).send('No access token provided');
         }
 
-        const authenticated = await this.authConfig.checkAuth(req, res);
+        const authenticated = await this.authConfig.checkAuth(req);
 
         if (!authenticated.isAuthenticated) {
             return res.status(authenticated.code).send(authenticated.message);
@@ -94,7 +94,7 @@ export class AuthController {
             return res.status(400).send('No authorization code provided');
         }
 
-        const authenticated = await this.authConfig.checkAuth(req, res);
+        const authenticated = await this.authConfig.checkAuth(req);
 
         if (!authenticated.isAuthenticated) {
             return res.status(authenticated.code).send(authenticated.message);
