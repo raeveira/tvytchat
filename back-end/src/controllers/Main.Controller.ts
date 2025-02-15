@@ -13,7 +13,7 @@ export class MainController {
     private authConfig: AuthConfig;
     private readonly io: Server;
     private readonly db: PrismaDatabase;
-    private userControllers: Map<string, { twitch: TwitchController; youtube: YoutubeController }>;
+    private chatControllers: Map<string, { twitch: TwitchController; youtube: YoutubeController }>;
     private readonly envConfig: EnvConfig;
     private readonly cryptConfig: CryptConfig;
 
@@ -21,9 +21,30 @@ export class MainController {
         this.authConfig = AuthConfig;
         this.io = io;
         this.db = db;
-        this.userControllers = new Map();
+        this.chatControllers = new Map();
         this.envConfig = EnvConfig;
         this.cryptConfig = CryptConfig;
+
+        // Handle Socket.IO connections
+        this.io.on("connection", (socket) => {
+            console.log(`Socket ${socket.id} connected`);
+
+            socket.on("joinRoom", (chatId) => {
+                console.log(`Socket ${socket.id} joined room ${chatId}`);
+                socket.join(chatId);
+
+                // Ensure controllers exist for this chatId
+                if (!this.chatControllers.has(chatId)) {
+                    const twitchController = new TwitchController(this.io, this.db, this.envConfig, this.cryptConfig, null);
+                    const youtubeController = new YoutubeController(this.io, this.db, this.envConfig, this.cryptConfig, null);
+                    this.chatControllers.set(chatId, {twitch: twitchController, youtube: youtubeController});
+                }
+            });
+
+            socket.on("disconnect", () => {
+                console.log(`Socket ${socket.id} disconnected`);
+            });
+        });
     }
 
     public greeter = (req: any, res: any) => {
@@ -107,55 +128,36 @@ export class MainController {
 
         console.log("Retrieving stream messages");
 
-        // Handle Socket.IO connections
-        this.io.on("connection", (socket) => {
-            console.log(`Socket ${socket.id} connected`);
-            socket.join(chatId);
-            console.log(`Socket ${socket.id} joined room ${chatId}`);
+        // Ensure controllers exist for this chatId
+        if (!this.chatControllers.has(chatId)) {
+            const twitchController = new TwitchController(this.io, this.db, this.envConfig, this.cryptConfig, null);
+            const youtubeController = new YoutubeController(this.io, this.db, this.envConfig, this.cryptConfig, null);
+            this.chatControllers.set(chatId, {twitch: twitchController, youtube: youtubeController});
+        }
 
-            // Create user-specific controllers for this socket
-            const socketTwitchController = new TwitchController(this.io, this.db, this.envConfig, this.cryptConfig, socket);
-            const socketYoutubeController = new YoutubeController(this.io, this.db, this.envConfig, this.cryptConfig, socket);
+        const chatControllers = this.chatControllers.get(chatId);
 
-            // Store the controllers in a map for later use
-            this.userControllers.set(socket.id, {twitch: socketTwitchController, youtube: socketYoutubeController});
-
-            // Retrieve stream messages using the socket-specific controllers
+        if (chatControllers) {
             let twitchresponse = false;
             let youtuberesponse = false;
 
-            socketTwitchController.getStreamMessages(chatId, sessionUsername).then((data) => {
+            chatControllers.twitch.getStreamMessages(chatId, sessionUsername).then((data) => {
                 console.log("Twitch Response:", data);
                 if (data.code == 200) {
                     twitchresponse = true;
                 }
             });
 
-            socketYoutubeController.getStreamMessages(chatId, sessionUsername).then((data) => {
+            chatControllers.youtube.getStreamMessages(chatId, sessionUsername).then((data) => {
                 console.log("Youtube Response:", data);
                 if (data.code == 200) {
                     youtuberesponse = true;
                 }
             });
 
-            socket.on("disconnect", () => {
-                console.log(`Socket ${socket.id} disconnected from room ${chatId}`);
-                socket.leave(chatId);
-                this.userControllers.delete(socket.id); // Clean up
-            });
-
-            socket.on("leaveRoom", (roomId) => {
-                if (roomId === chatId) {
-                    console.log(`Socket ${socket.id} left room ${roomId}`);
-                    socket.leave(roomId);
-                }
-            });
-
             if (twitchresponse && youtuberesponse) {
                 res.status(200).json({message: "Stream messages are being sent", errorType: "None"});
             }
-        });
+        }
     };
-
-
 }

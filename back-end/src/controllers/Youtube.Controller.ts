@@ -13,9 +13,9 @@ export class YoutubeController {
     private youtubeClient: LiveChat | undefined;
     private envConfig: EnvConfig;
     private cryptConfg: CryptConfig;
-    private socket: Socket;
+    private socket: Socket | null;
 
-    constructor(io: Server, db: PrismaDatabase, EnvConfig: EnvConfig, CryptConfig: CryptConfig, Socket: Socket) {
+    constructor(io: Server, db: PrismaDatabase, EnvConfig: EnvConfig, CryptConfig: CryptConfig, Socket: Socket | null) {
         this.io = io;
         this.db = db;
         this.envConfig = EnvConfig;
