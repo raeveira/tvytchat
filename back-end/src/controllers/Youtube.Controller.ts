@@ -63,8 +63,11 @@ export class YoutubeController {
                         await this.db.deleteYoutubeToken(username);
                         return {message: 'Failed to refresh token', code: 401};
                     }
+
+                    const encryptAccessToken = await this.cryptConfg.encrypt(newAccessToken);
+
                     // Update stored token
-                    await this.db.updateYoutubeAccessToken(username, newAccessToken);
+                    await this.db.updateYoutubeAccessToken(username, encryptAccessToken);
                     // Retry with new token
                     await this.initYoutube(username, chatId);
                 }
