@@ -305,24 +305,7 @@ export class AuthController {
 
         const user = authenticated.user;
 
-        if (typeof user === 'string') {
-           const authResponse = await this.authConfig.checkAuth(req);
-
-            console.log("Auth response: ", authResponse);
-
-            if (!authResponse.isAuthenticated) {
-                if (authResponse.code) {
-                    return res.status(authResponse.code).json({
-                        message: authResponse.message,
-                        errorType: "ServerError"
-                    });
-                }
-                console.log(authResponse.message)
-                return res.status(401).json({message: "Unauthorized", errorType: "Unauthorized"});
-            }
-
-            const user = authResponse.user;
-
+        if (user) {
             console.log(user)
 
             if (typeof user === "string") {
