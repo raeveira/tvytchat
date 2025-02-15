@@ -12,9 +12,20 @@ const safeJsonParse = (str: string) => {
     }
 };
 
-export default function Page()  {
-    const [log, setLog] = useState<{message: string, code: number}[]>([]);
+export default function Page() {
+    const [log, setLog] = useState<{ message: string, code: number }[]>([]);
     const [chatId, setChatId] = useState<string>('');
+
+    useEffect(() => {
+        fetch('https://tvytapi.raeveira.nl/api/auth/retrieve-chatId')
+            .then(response => response.json())
+            .then(data => {
+                setChatId(data.chatId);
+            })
+            .catch(error => {
+                console.error('Failed to retrieve chatId:', error);
+            });
+    }, []);
 
     useEffect(() => {
         const socket = connect();
@@ -41,10 +52,6 @@ export default function Page()  {
             }
         });
 
-        socket.on('chatId', (chatId) => {
-            setChatId(chatId);
-        });
-
         return () => {
             socket.off('error');
             socket.off('success')
@@ -56,10 +63,12 @@ export default function Page()  {
             <div className="text-[2rem] font-bold text-center flex-1">
                 <div>
                     Auth:
-                    <a href={'https://tvytapi.raeveira.nl/api/auth/twitch'} className={'text-blue-500 hover:underline'}>
+                    <a href={'https://tvytapi.raeveira.nl/api/auth/twitch'}
+                       className={'text-blue-500 hover:underline'}>
                         Twitch
                     </a>
-                    <a href={'https://tvytapi.raeveira.nl/api/auth/youtube'} className={'text-red-500 hover:underline'}>
+                    <a href={'https://tvytapi.raeveira.nl/api/auth/youtube'}
+                       className={'text-red-500 hover:underline'}>
                         YouTube
                     </a>
                 </div>

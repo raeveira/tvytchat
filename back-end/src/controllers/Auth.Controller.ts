@@ -289,4 +289,57 @@ export class AuthController {
         }
     }
 
+    public async retrieveChatId(req: Request, res: Response) {
+        let sessionUsername;
+        let chatId;
+
+        const authenticated = await this.authConfig.checkAuth(req);
+
+        if (!authenticated.isAuthenticated) {
+            return res.status(authenticated.code).send(authenticated.message);
+        }
+
+        const user = authenticated.user;
+
+        if (typeof user === 'string') {
+           const authResponse = await this.authConfig.checkAuth(req);
+
+            console.log("Auth response: ", authResponse);
+
+            if (!authResponse.isAuthenticated) {
+                if (authResponse.code) {
+                    return res.status(authResponse.code).json({
+                        message: authResponse.message,
+                        errorType: "ServerError"
+                    });
+                }
+                console.log(authResponse.message)
+                return res.status(401).json({message: "Unauthorized", errorType: "Unauthorized"});
+            }
+
+            const user = authResponse.user;
+
+            if (typeof user === "string") {
+                sessionUsername = user;
+            } else if (typeof user === "object" && user !== null && "username" in user) {
+                sessionUsername = user.username.toString();
+            } else {
+                return {message: "Invalid user data", errorType: "BadRequest", code: 400};
+            }
+
+            if (!sessionUsername) {
+                return {message: "Username is required", errorType: "BadRequest", code: 400};
+            }
+
+            const chatIdResponse =  await this.db.getChatIdBySessionId(sessionUsername);
+
+            chatId = chatIdResponse?.chatId;
+
+            console.log("Chat ID:", chatId);
+            return res.status(200).json({chatId: chatId});
+        } else {
+            return res.status(400).json({message: 'Invalid user data', errorType: 'BadRequest'});
+        }
+    }
+
 }

@@ -41,6 +41,10 @@ export class AuthRouter {
             await this.authController.checkAuth(req, res);
         });
 
+        this.expressRouter.get('/retrieve-chatId', async (req: Request, res: Response) => {
+            await this.authController.retrieveChatId(req, res);
+        });
+
         return this.expressRouter;
     }
 
