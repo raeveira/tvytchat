@@ -17,12 +17,13 @@ export default function Page() {
     const [chatId, setChatId] = useState<string>();
 
     useEffect(() => {
-        fetch('https://tvytapi.raeveira.nl/api/auth/retrieve-chatId')
-            .then(response => {
+        const fetchChatId = async () => {
+            try {
+                const response = await fetch('https://tvytapi.raeveira.nl/api/auth/retrieve-chatId');
                 console.log('Response:', response);
-                const data = response.json()
+                const data = await response.json();
 
-                if(data.code !== 200) {
+                if (data.code !== 200) {
                     setLog(prevLog => [...prevLog, {message: data.message, code: data.code || 500}]);
                     return;
                 } else if (!data.chatId) {
@@ -30,10 +31,12 @@ export default function Page() {
                     return;
                 }
                 setChatId(data.chatId);
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Failed to retrieve chatId:', error);
-            });
+            }
+        }
+
+        fetchChatId();
     }, []);
 
     useEffect(() => {
