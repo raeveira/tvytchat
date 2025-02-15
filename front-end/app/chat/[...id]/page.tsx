@@ -8,7 +8,12 @@ export default function Page() {
     const pathname = usePathname();
 
     const [chatId, setChatId] = useState<string | null>(null);
-    const [messages, setMessages] = useState<{platform: string, icon: {broadcaster: string, moderator: string, subscriber: string}, username: string, message: string}[]>([]);
+    const [messages, setMessages] = useState<{
+        platform: string,
+        icon: { broadcaster: string, moderator: string, subscriber: string },
+        username: string,
+        message: string
+    }[]>([]);
     const [startedChat, setStartedChat] = useState<boolean>(false);
 
     useEffect(() => {
@@ -26,7 +31,10 @@ export default function Page() {
     useEffect(() => {
         const socket = connect();
 
-        socket.emit('joinRoom', chatId);
+        socket.on('connect', () => {
+            console.log('Socket connected');
+            socket.emit('joinRoom', chatId);
+        });
 
         const requestChat = async () => {
             const response = await fetch(`https://tvytapi.raeveira.nl/api/retrieve-chat?chatId=${chatId}`, {
