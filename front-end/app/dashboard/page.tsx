@@ -14,12 +14,13 @@ const safeJsonParse = (str: string) => {
 
 export default function Page() {
     const [log, setLog] = useState<{ message: string, code: number }[]>([]);
-    const [chatId, setChatId] = useState<string>('');
+    const [chatId, setChatId] = useState<string>();
 
     useEffect(() => {
         fetch('https://tvytapi.raeveira.nl/api/auth/retrieve-chatId')
             .then(response => response.json())
             .then(data => {
+                console.log('ChatId:', data);
                 setChatId(data.chatId);
             })
             .catch(error => {
@@ -83,7 +84,9 @@ export default function Page() {
                         </div>
                     ))}
                 </div>
-                <embed src={`/chat/${chatId}`} className={'w-[600px] h-[400px] absolute right-0 bottom-0 m-5'}/>
+                {chatId &&
+                    <embed src={`/chat/${chatId}`} className={'w-[600px] h-[400px] absolute right-0 bottom-0 m-5'}/>
+                }
             </div>
 
         </div>
