@@ -5,7 +5,7 @@
     "install-all": "concurrently \"cd front-end && npm install\" \"cd back-end && npm install\"",
     "build-all": "concurrently \"cd front-end && npm run build\" \"cd back-end && npm run build\"",
     "start-all": "concurrently \"cd front-end && npm run start\" \"cd back-end && npm run start\"",
-    "setup": "npm run install-all && npm run build-front && npm run start-all",
+    "setup": "npm run install-all && npm run build-all && npm run start-all",
     "start": "npm run setup"
   },
   "devDependencies": {
