@@ -19,7 +19,9 @@ export default function Page() {
     useEffect(() => {
         const fetchChatId = async () => {
             try {
-                const response = await fetch('https://tvytapi.raeveira.nl/api/auth/retrieve-chatId');
+                const response = await fetch('https://tvytapi.raeveira.nl/api/auth/retrieve-chatId', {
+                    credentials: 'include',
+                });
                 console.log('Response:', response);
                 const data = await response.json();
 
