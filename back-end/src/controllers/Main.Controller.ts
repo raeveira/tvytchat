@@ -24,27 +24,6 @@ export class MainController {
         this.chatControllers = new Map();
         this.envConfig = EnvConfig;
         this.cryptConfig = CryptConfig;
-
-        // Handle Socket.IO connections
-        this.io.on("connection", (socket) => {
-            console.log(`Socket ${socket.id} connected`);
-
-            socket.on("joinRoom", (chatId) => {
-                console.log(`Socket ${socket.id} joined room ${chatId}`);
-                socket.join(chatId);
-
-                // Ensure controllers exist for this chatId
-                if (!this.chatControllers.has(chatId)) {
-                    const twitchController = new TwitchController(this.io, this.db, this.envConfig, this.cryptConfig, null);
-                    const youtubeController = new YoutubeController(this.io, this.db, this.envConfig, this.cryptConfig, null);
-                    this.chatControllers.set(chatId, {twitch: twitchController, youtube: youtubeController});
-                }
-            });
-
-            socket.on("disconnect", () => {
-                console.log(`Socket ${socket.id} disconnected`);
-            });
-        });
     }
 
     public greeter = (req: any, res: any) => {
@@ -125,6 +104,27 @@ export class MainController {
         }
 
         console.log("Chat ID:", chatId);
+
+        // Handle Socket.IO connections
+        this.io.on("connection", (socket) => {
+            console.log(`Socket ${socket.id} connected`);
+
+            socket.on("joinRoom", (chatId) => {
+                console.log(`Socket ${socket.id} joined room ${chatId}`);
+                socket.join(chatId);
+
+                // Ensure controllers exist for this chatId
+                if (!this.chatControllers.has(chatId)) {
+                    const twitchController = new TwitchController(this.io, this.db, this.envConfig, this.cryptConfig, null);
+                    const youtubeController = new YoutubeController(this.io, this.db, this.envConfig, this.cryptConfig, null);
+                    this.chatControllers.set(chatId, {twitch: twitchController, youtube: youtubeController});
+                }
+            });
+
+            socket.on("disconnect", () => {
+                console.log(`Socket ${socket.id} disconnected`);
+            });
+        });
 
         console.log("Retrieving stream messages");
 

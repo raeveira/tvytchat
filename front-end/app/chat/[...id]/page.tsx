@@ -74,7 +74,7 @@ export default function Page() {
         return () => {
             socket.off('chat');
         };
-    }, [startedChat]);
+    }, [startedChat, chatId]);
 
     return (
         <div
