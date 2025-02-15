@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "install-all": "concurrently \"cd front-end && npm install\" \"cd back-end && npm install\"",
-    "build-front": "cd front-end && npm run build",
+    "build-all": "concurrently \"cd front-end && npm run build\" \"cd back-end && npm run build\"",
     "start-all": "concurrently \"cd front-end && npm run start\" \"cd back-end && npm run start\"",
     "setup": "npm run install-all && npm run build-front && npm run start-all",
     "start": "npm run setup"
