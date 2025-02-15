@@ -293,6 +293,8 @@ export class AuthController {
         let sessionUsername;
         let chatId;
 
+        console.log("Retrieving ChatID from session, for Dashboard");
+
         const authenticated = await this.authConfig.checkAuth(req);
 
         if (!authenticated.isAuthenticated) {
