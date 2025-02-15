@@ -14,6 +14,7 @@ const safeJsonParse = (str: string) => {
 
 export default function Page()  {
     const [log, setLog] = useState<{message: string, code: number}[]>([]);
+    const [chatId, setChatId] = useState<string>('');
 
     useEffect(() => {
         const socket = connect();
@@ -38,6 +39,10 @@ export default function Page()  {
                     setLog(prevLog => [...prevLog, {message: message.message, code: 200}]);
                 }
             }
+        });
+
+        socket.on('chatId', (chatId) => {
+            setChatId(chatId);
         });
 
         return () => {
@@ -69,7 +74,7 @@ export default function Page()  {
                         </div>
                     ))}
                 </div>
-                <embed src={'/chat/101'} className={'w-[600px] h-[400px] absolute right-0 bottom-0 m-5'}/>
+                <embed src={`/chat/${chatId}`} className={'w-[600px] h-[400px] absolute right-0 bottom-0 m-5'}/>
             </div>
 
         </div>

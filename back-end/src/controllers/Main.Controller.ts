@@ -120,6 +120,8 @@ export class MainController {
             }
         });
 
+        this.io.to(chatId).emit("chatId", chatId);
+
         if (twitchresponse || youtuberesponse) {
             console.log("Connecting Socket.IO");
             // Handle Socket.IO connections
