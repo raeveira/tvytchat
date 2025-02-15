@@ -38,9 +38,7 @@ const io = new Server(httpServer, {
 // create instances
 const db = new PrismaDatabase();
 const authController = new AuthController(envConfig, db, authConfig, cryptConfig);
-const twitchController = new TwitchController(io, db, envConfig, cryptConfig);
-const youtubeController = new YoutubeController(io, db, envConfig, cryptConfig);
-const mainController = new MainController(twitchController, youtubeController, authConfig, io, db);
+const mainController = new MainController(authConfig, io, db, envConfig, cryptConfig);
 const authRouter = new AuthRouter(authController);
 const mainRouter = new MainRouter(mainController, authRouter);
 

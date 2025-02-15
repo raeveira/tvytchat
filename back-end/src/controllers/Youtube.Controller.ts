@@ -1,5 +1,5 @@
 import {PrismaDatabase} from "@database/Prisma.Database";
-import {Server} from "socket.io";
+import {Server, Socket} from "socket.io";
 import {Response} from "express";
 import {LiveChat} from "youtube-chat";
 import {EnvConfig} from "@config/Env.Config";
@@ -13,12 +13,14 @@ export class YoutubeController {
     private youtubeClient: LiveChat | undefined;
     private envConfig: EnvConfig;
     private cryptConfg: CryptConfig;
+    private socket: Socket;
 
-    constructor(io: Server, db: PrismaDatabase, EnvConfig: EnvConfig, CryptConfig: CryptConfig) {
+    constructor(io: Server, db: PrismaDatabase, EnvConfig: EnvConfig, CryptConfig: CryptConfig, Socket: Socket) {
         this.io = io;
         this.db = db;
         this.envConfig = EnvConfig;
         this.cryptConfg = CryptConfig
+        this.socket = Socket;
     }
 
     private async initYoutube(username: string, chatId: string) {

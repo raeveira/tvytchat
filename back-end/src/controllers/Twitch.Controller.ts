@@ -1,5 +1,5 @@
 import {EnvConfig} from "@config/Env.Config";
-import {Server} from "socket.io";
+import {Server, Socket} from "socket.io";
 import {PrismaDatabase} from "@/database/Prisma.Database";
 import tmi from "tmi.js";
 import {Response} from "express";
@@ -13,12 +13,14 @@ export class TwitchController {
     private envConfig: EnvConfig;
     private twitchClient: tmi.Client | undefined;
     private cryptConfig: CryptConfig;
+    private socket: Socket;
 
-    constructor(io: Server, db: PrismaDatabase, EnvConfig: EnvConfig, CryptConfig: CryptConfig) {
+    constructor(io: Server, db: PrismaDatabase, EnvConfig: EnvConfig, CryptConfig: CryptConfig, Socket: Socket) {
         this.io = io;
         this.db = db;
         this.envConfig = EnvConfig;
         this.cryptConfig = CryptConfig;
+        this.socket = Socket;
     }
 
     private async initTwitch(username: string, chatId: string): Promise<{ message: string; code: number } | undefined> {
