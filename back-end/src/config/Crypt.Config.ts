@@ -39,7 +39,13 @@ export class CryptConfig {
         return new Promise((resolve, reject) => {
             try {
                 const [ivHex, encrypted] = encryptedData.split(':');
+                console.log(`IV Hex: ${ivHex}`); // Debugging: Check IV hex string
                 const iv = Buffer.from(ivHex, 'hex');
+                console.log(`IV Length: ${iv.length}`); // Debugging: Check IV length
+
+                if (iv.length !== 16) {
+                    throw new Error('Invalid IV length');
+                }
 
                 const key = crypto.createHash('sha512')
                     .update(this.secretKey)
@@ -56,4 +62,5 @@ export class CryptConfig {
             }
         });
     }
+
 }
