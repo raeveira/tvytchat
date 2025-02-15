@@ -132,7 +132,7 @@ export default function Page() {
                             <span className="font-bold text-[#dddddd] text-[2rem]">{message.username}: </span>
                         </div>
                         <span
-                            className="text-[#ffffff] break-words [word-wrap:break-word] relative -tracking-[0.05em] text-[2rem]">{message.message}</span>
+                            className="text-[#ffffff] break-words [word-wrap:break-word] relative -tracking-[0.05em] text-[2rem] -top-[4px] no-scrollbar">{message.message}</span>
                     </div>
                 </div>
             ))}
