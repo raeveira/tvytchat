@@ -321,6 +321,8 @@ export class AuthController {
 
             const user = authResponse.user;
 
+            console.log(user)
+
             if (typeof user === "string") {
                 sessionUsername = user;
             } else if (typeof user === "object" && user !== null && "username" in user) {
