@@ -37,10 +37,7 @@ export default function Page() {
     useEffect(() => {
         const socket = connect();
 
-        socket.on('connect', () => {
-            console.log('Socket connected');
-            socket.emit('joinRoom', chatId);
-        });
+        socket.emit('joinRoom', chatId);
 
         socket.on('error', (error) => {
             if (error.message) {

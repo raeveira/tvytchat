@@ -29,13 +29,6 @@ export default function Page() {
     }, [messages]);
 
     useEffect(() => {
-        const socket = connect();
-
-        socket.on('connect', () => {
-            console.log('Socket connected');
-            socket.emit('joinRoom', chatId);
-        });
-
         const requestChat = async () => {
             const response = await fetch(`https://tvytapi.raeveira.nl/api/retrieve-chat?chatId=${chatId}`, {
                 method: 'GET',
@@ -70,6 +63,8 @@ export default function Page() {
 
     useEffect(() => {
         const socket = connect();
+
+        socket.emit('joinRoom', chatId);
 
         socket.on('chat', (newMessages) => {
             console.log('Received chat messages:', newMessages);
