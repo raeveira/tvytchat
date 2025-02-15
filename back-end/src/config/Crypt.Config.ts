@@ -5,18 +5,18 @@ export class CryptConfig {
     private envConfig: EnvConfig;
     private algorithm = 'aes-256-cbc';
     private secretKey: string;
-    private readonly iv: Buffer;
+    private iv: Buffer | undefined;
 
     constructor(EnvConfig: EnvConfig) {
         this.envConfig = EnvConfig;
         this.secretKey = this.envConfig.get('CRYPT_SECRET_KEY');
-
-        this.iv = crypto.randomBytes(16);
     }
 
     public encrypt = async (data: string): Promise<string> => {
         return new Promise((resolve, reject) => {
             try {
+                this.iv = crypto.randomBytes(16);
+
                 const key = crypto.createHash('sha512')
                     .update(this.secretKey)
                     .digest('hex')
