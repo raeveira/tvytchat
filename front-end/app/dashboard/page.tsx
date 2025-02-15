@@ -25,7 +25,7 @@ export default function Page() {
                 console.log('Response:', response);
                 const data = await response.json();
 
-                if (data.code !== 200) {
+                if (data.code !== 200 || !response.ok) {
                     setLog(prevLog => [...prevLog, {message: data.message, code: data.code || 500}]);
                     return;
                 } else if (!data.chatId) {
