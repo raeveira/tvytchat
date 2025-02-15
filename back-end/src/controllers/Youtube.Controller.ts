@@ -121,7 +121,7 @@ export class YoutubeController {
             this.youtubeClient.on('error', (error) => {
                 console.error('Youtube error:', error);
                 this.io.to(chatId).emit('error', error);
-            })
+            });
 
             try {
                 const ok = await this.youtubeClient.start();

@@ -26,7 +26,7 @@ const app = express();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: 'https://tvyt.raeveira.nl',
+        origin: ['https://tvyt.raeveira.nl', 'http://localhost:3030'],
     },
     connectionStateRecovery: {
         maxDisconnectionDuration: 2 * 6 * 1000, // 2 minute
@@ -48,7 +48,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({extended: true}));
 app.use(cors({
-    origin: 'https://tvyt.raeveira.nl',
+    origin: ['https://tvyt.raeveira.nl', 'http://localhost:3030'],
     credentials: true
 }));
 

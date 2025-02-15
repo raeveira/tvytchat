@@ -4,7 +4,7 @@
   "main": "src/server.ts",
   "scripts": {
     "dev": "nodemon --inspect=9229",
-    "build": "./node_modules/.bin/rimraf ./dist && ./node_modules/.bin/tsc --skipLibCheck",
+    "build": "npx rimraf ./dist && npx tsc --skipLibCheck",
     "start": "npm run build && node ./dist/server.js"
   },
   "author": "",
