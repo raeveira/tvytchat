@@ -37,6 +37,8 @@ export default function Page() {
     useEffect(() => {
         const socket = connect();
 
+        socket.emit('joinRoom', chatId);
+
         socket.on('error', (error) => {
             if (error.message) {
                 const parsedErrorMessage = safeJsonParse(error.message);
@@ -63,7 +65,7 @@ export default function Page() {
             socket.off('error');
             socket.off('success')
         };
-    }, []);
+    }, [chatId]);
 
     return (
         <div className={'flex flex-row items-center justify-center h-screen w-screen'}>
