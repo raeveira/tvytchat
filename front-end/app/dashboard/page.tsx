@@ -18,9 +18,17 @@ export default function Page() {
 
     useEffect(() => {
         fetch('https://tvytapi.raeveira.nl/api/auth/retrieve-chatId')
-            .then(response => response.json())
-            .then(data => {
-                console.log('ChatId:', data);
+            .then(response => {
+                console.log('Response:', response);
+                const data = response.json()
+
+                if(data.code !== 200) {
+                    setLog(prevLog => [...prevLog, {message: data.message, code: data.code || 500}]);
+                    return;
+                } else if (!data.chatId) {
+                    setLog(prevLog => [...prevLog, {message: 'No chatId found', code: 404}]);
+                    return;
+                }
                 setChatId(data.chatId);
             })
             .catch(error => {
