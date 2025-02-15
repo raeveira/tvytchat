@@ -297,6 +297,8 @@ export class AuthController {
 
         const authenticated = await this.authConfig.checkAuth(req);
 
+        console.log("Authenticated:", authenticated);
+
         if (!authenticated.isAuthenticated) {
             return res.status(authenticated.code).send(authenticated.message);
         }
