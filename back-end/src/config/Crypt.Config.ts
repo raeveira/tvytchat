@@ -56,8 +56,6 @@ export class CryptConfig {
             }
 
             const iv = Buffer.from(ivHex, 'hex');
-            console.log(`IV Hex: ${ivHex}`); // Debugging: Check IV hex string
-            console.log(`IV Length: ${iv.length}`); // Debugging: Check IV length
 
             if (iv.length !== 16) {
                 throw new Error('Invalid IV length');

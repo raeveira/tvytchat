@@ -84,7 +84,6 @@ export class YoutubeController {
                 return null;
             }
 
-            console.log("Youtube Channel ID:", channelId);
 
             this.youtubeClient = new LiveChat({channelId});
 
@@ -94,11 +93,10 @@ export class YoutubeController {
 
             this.youtubeClient.on('end', () => {
                 console.log('Youtube live ended');
-                this.reconnectYoutube(chatId, username); // Attempt reconnect on end
+                this.reconnectYoutube(chatId, username);
             });
 
             this.youtubeClient.on('chat', (chatItem) => {
-                console.log('Youtube message:', chatItem);
 
                 const icon = {};
 
@@ -112,8 +110,6 @@ export class YoutubeController {
                     icon.subscriber = "1"
                 }
 
-                console.log('Youtube Badges:', icon);
-
                 const message = {
                     platform: 'YouTube',
                     username: chatItem.author.name,
@@ -122,7 +118,6 @@ export class YoutubeController {
                     message: chatItem.message[0].text
                 };
 
-                console.log('Chat Message:', message);
                 this.io.to(chatId).emit('chat', [message]);
             });
 
@@ -141,14 +136,12 @@ export class YoutubeController {
                         platform: 'YouTube'
                     });
                     this.youtubeClient = undefined;
-                    console.log('Failed to connect to Youtube');
                 } else {
                     this.io.to(chatId).emit('success', {
                         message: 'Youtube chat started',
                         code: 200,
                         platform: 'YouTube'
                     });
-                    console.log('Connected to Youtube');
                     return {message: 'Youtube chat started', code: 200};
                 }
             } catch (error) {
@@ -206,8 +199,6 @@ export class YoutubeController {
     public async getStreamMessages(chatId: string, sessionUsername: string) {
 
         const response = await this.initYoutube(sessionUsername, chatId);
-
-        console.log("Init Youtube Response:", response);
 
         if (response == undefined) {
             this.io.to(chatId).emit("error", {message: "Youtube not started", code: 500});

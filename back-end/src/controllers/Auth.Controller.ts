@@ -111,8 +111,6 @@ export class AuthController {
 
             const data = await response.json();
 
-            console.log('Data:', data);
-
             if (data.error) {
                 console.error('Error exchanging code for token:', data.error);
                 return res.status(500).send('Failed to exchange code for token');
@@ -254,9 +252,9 @@ export class AuthController {
 
         } catch (err) {
             if (err instanceof Prisma.PrismaClientKnownRequestError) {
-                console.log('Caught Prisma error:', err);
+                console.error('Caught Prisma error:', err);
                 if (err.code === 'P2002') {
-                    console.log('Sending 400 response for unique constraint violation');
+                    console.error('Sending 400 response for unique constraint violation');
                     return res.status(400).json({
                         message: 'Email or username already exists',
                         errorType: 'ClientError',
@@ -297,8 +295,6 @@ export class AuthController {
 
         const authenticated = await this.authConfig.checkAuth(req);
 
-        console.log("Authenticated:", authenticated);
-
         if (!authenticated.isAuthenticated) {
             return res.status(authenticated.code).send(authenticated.message);
         }
@@ -306,7 +302,6 @@ export class AuthController {
         const user = authenticated.user;
 
         if (user) {
-            console.log(user)
 
             if (typeof user === "string") {
                 sessionUsername = user;
@@ -324,7 +319,6 @@ export class AuthController {
 
             chatId = chatIdResponse?.chatId;
 
-            console.log("Chat ID:", chatId);
             return res.status(200).json({chatId: chatId});
         } else {
             return res.status(400).json({message: 'Invalid user data', errorType: 'BadRequest'});

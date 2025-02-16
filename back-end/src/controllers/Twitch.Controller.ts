@@ -66,8 +66,6 @@ export class TwitchController {
 
             // Emit messages immediately when they are received
             this.twitchClient.on("message", (channel, tags, message, self) => {
-                console.log("Twitch Badges:", tags.badges);
-
                 const chatMessage = {
                     platform: "Twitch",
                     icon: tags.badges || {},
@@ -75,8 +73,6 @@ export class TwitchController {
                     message: message,
                 };
 
-                console.log("Chat Message:", chatMessage);
-                console.log("Chat ID:", chatId);
                 this.io.to(chatId).emit("chat", [chatMessage]);
             });
 
@@ -107,8 +103,6 @@ export class TwitchController {
     public async getStreamMessages(chatId: string, sessionUsername: string) {
 
         const response = await this.initTwitch(sessionUsername, chatId);
-
-        console.log("Init Twitch Response:", response);
 
         if (response && response.code !== 200) {
             return {message: response.message, errorType: "ServerError", code: 500};

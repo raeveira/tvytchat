@@ -17,7 +17,6 @@ export default function Page() {
     const [startedChat, setStartedChat] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log('Pathname:', pathname.split('/')[2]);
         setChatId(pathname.split('/')[2])
     }, [pathname]);
 

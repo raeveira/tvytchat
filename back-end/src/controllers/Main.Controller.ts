@@ -40,21 +40,15 @@ export class MainController {
     }
 
     private async extractChatId(url: string): Promise<string | null> {
-        console.log("URL:", url);
-
         // Parse the URL to extract the query string
         const parsedUrl = new URL(`http://example.com${url}`); // Add a base URL to make it valid
         const urlParams = new URLSearchParams(parsedUrl.search);
-        console.log("URL Params:", urlParams);
-        console.log("Chat ID:", urlParams.get("chatId"));
         return urlParams.get("chatId") || null;
     }
 
     public getStreamMessages = async (req: Request, res: Response) => {
         let sessionUsername;
         let chatId = await this.extractChatId(req.url);
-
-        console.log("Chat ID:", chatId);
 
         if (chatId) {
             const user = await this.db.getUserByChatId(chatId);
@@ -67,8 +61,6 @@ export class MainController {
         } else {
             const authResponse = await this.authConfig.checkAuth(req);
 
-            console.log("Auth response: ", authResponse);
-
             if (!authResponse.isAuthenticated) {
                 if (authResponse.code) {
                     return res.status(authResponse.code).json({
@@ -76,7 +68,6 @@ export class MainController {
                         errorType: "ServerError"
                     });
                 }
-                console.log(authResponse.message)
                 return res.status(401).json({message: "Unauthorized", errorType: "Unauthorized"});
             }
 
@@ -103,11 +94,8 @@ export class MainController {
             chatId = chatIdResponse as string;
         }
 
-        console.log("Chat ID:", chatId);
-
         // Handle Socket.IO connections
         this.io.on("connection", (socket) => {
-            console.log(`Socket ${socket.id} connected`);
 
             socket.on("joinRoom", (chatId) => {
                 console.log(`Socket ${socket.id} joined room ${chatId}`);
@@ -142,14 +130,12 @@ export class MainController {
             let youtuberesponse = false;
 
             chatControllers.twitch.getStreamMessages(chatId, sessionUsername).then((data) => {
-                console.log("Twitch Response:", data);
                 if (data.code == 200) {
                     twitchresponse = true;
                 }
             });
 
             chatControllers.youtube.getStreamMessages(chatId, sessionUsername).then((data) => {
-                console.log("Youtube Response:", data);
                 if (data.code == 200) {
                     youtuberesponse = true;
                 }
