@@ -12,14 +12,16 @@ export class YoutubeController {
     private db: PrismaDatabase;
     private youtubeClient: LiveChat | undefined;
     private envConfig: EnvConfig;
-    private cryptConfg: CryptConfig;
+    private cryptConfig: CryptConfig;
     private socket: Socket | null;
+    private reconnectAttempts = 0;
+    private reconnectDelays = [30000, 60000, 120000];
 
     constructor(io: Server, db: PrismaDatabase, EnvConfig: EnvConfig, CryptConfig: CryptConfig, Socket: Socket | null) {
         this.io = io;
         this.db = db;
         this.envConfig = EnvConfig;
-        this.cryptConfg = CryptConfig
+        this.cryptConfig = CryptConfig
         this.socket = Socket;
     }
 
@@ -31,12 +33,12 @@ export class YoutubeController {
             return {message: "User has no Youtube token", code: 404};
         }
 
-        if(!refreshToken?.youtubeRefreshToken) {
+        if (!refreshToken?.youtubeRefreshToken) {
             return {message: "User has no Youtube refresh token", code: 404};
         }
 
-        const decryptedAccessToken = await this.cryptConfg.decrypt(accessToken?.youtubeToken);
-        const decryptedRefreshToken = await this.cryptConfg.decrypt(refreshToken?.youtubeRefreshToken);
+        const decryptedAccessToken = await this.cryptConfig.decrypt(accessToken?.youtubeToken);
+        const decryptedRefreshToken = await this.cryptConfig.decrypt(refreshToken?.youtubeRefreshToken);
 
         if (this.youtubeClient) {
             return {message: "Youtube client already initialized", code: 200};
@@ -53,7 +55,7 @@ export class YoutubeController {
             if (data.error) {
                 if (data.error.code === 401) {
                     // Token expired, refresh it
-                    if(!decryptedRefreshToken) {
+                    if (!decryptedRefreshToken) {
                         await this.db.deleteYoutubeToken(username);
                         return {message: 'Refresh token not found', code: 401};
                     }
@@ -64,7 +66,7 @@ export class YoutubeController {
                         return {message: 'Failed to refresh token', code: 401};
                     }
 
-                    const encryptAccessToken = await this.cryptConfg.encrypt(newAccessToken);
+                    const encryptAccessToken = await this.cryptConfig.encrypt(newAccessToken);
 
                     // Update stored token
                     await this.db.updateYoutubeAccessToken(username, encryptAccessToken);
@@ -92,6 +94,7 @@ export class YoutubeController {
 
             this.youtubeClient.on('end', () => {
                 console.log('Youtube live ended');
+                this.reconnectYoutube(chatId, username); // Attempt reconnect on end
             });
 
             this.youtubeClient.on('chat', (chatItem) => {
@@ -126,6 +129,7 @@ export class YoutubeController {
             this.youtubeClient.on('error', (error) => {
                 console.error('Youtube error:', error);
                 this.io.to(chatId).emit('error', error);
+                this.reconnectYoutube(chatId, username); // Attempt reconnect on error
             });
 
             try {
@@ -150,10 +154,7 @@ export class YoutubeController {
             } catch (error) {
                 this.io.to(chatId).emit('error', error);
             }
-
-
         }
-
     }
 
     // Method to refresh access token using refresh token
@@ -174,6 +175,32 @@ export class YoutubeController {
         }
 
         return data.access_token;
+    }
+
+    // Reconnect logic
+    private async reconnectYoutube(chatId: string, username: string) {
+        if (this.reconnectAttempts >= this.reconnectDelays.length) {
+            console.log('Maximum reconnect attempts reached. Giving up.');
+            this.io.to(chatId).emit('error', {
+                message: 'Failed to reconnect to YouTube after multiple attempts.',
+                code: 500,
+                platform: 'YouTube'
+            });
+            return;
+        }
+
+        const delay = this.reconnectDelays[this.reconnectAttempts];
+        console.log(`Attempting reconnect in ${delay / 1000} seconds...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+
+        try {
+            await this.initYoutube(username, chatId);
+            this.reconnectAttempts = 0;
+        } catch (error) {
+            console.error('Reconnect attempt failed:', error);
+            this.reconnectAttempts++;
+            await this.reconnectYoutube(chatId, username);
+        }
     }
 
     public async getStreamMessages(chatId: string, sessionUsername: string) {
