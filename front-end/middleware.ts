@@ -38,6 +38,10 @@ export default async function middleware(request: NextRequest) {
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
+    console.log('isApiAuthRoute:', isApiAuthRoute);
+    console.log('isPublicRoute:', isPublicRoute);
+    console.log('isAuthRoute:', isAuthRoute);
+
     if (isApiAuthRoute) {
         return null;
     }
@@ -52,6 +56,8 @@ export default async function middleware(request: NextRequest) {
     if (!isLoggedIn && !isPublicRoute) {
         return Response.redirect(new URL("/", nextUrl));
     }
+
+    console.log('No redirect needed');
 
     return null;
 }
