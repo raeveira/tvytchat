@@ -305,7 +305,7 @@ export class AuthController {
 
             if (typeof user === "string") {
                 sessionUsername = user;
-            } else if (typeof user === "object" && user !== null && "username" in user) {
+            } else if (typeof user === "object" && "username" in user) {
                 sessionUsername = user.username.toString();
             } else {
                 return {message: "Invalid user data", errorType: "BadRequest", code: 400};
@@ -316,6 +316,8 @@ export class AuthController {
             }
 
             const chatIdResponse =  await this.db.getChatIdBySessionId(sessionUsername);
+
+            console.log("ChatID retrieved: ", chatIdResponse?.chatId);
 
             chatId = chatIdResponse?.chatId;
 
