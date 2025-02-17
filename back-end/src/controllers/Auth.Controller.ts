@@ -168,10 +168,13 @@ export class AuthController {
             // Return token
             res.cookie('AuthToken', token, {
                 httpOnly: true,
-                secure: false,
+                secure: true,
                 sameSite: 'lax',
                 path: '/',
-            })
+            });
+
+            // Ensure CORS allows credentials
+            res.header('Access-Control-Allow-Credentials', 'true');
 
             return res.status(200).send({message: 'Login successful', errorType: ''});
         } catch (error) {
@@ -321,7 +324,7 @@ export class AuthController {
                 return {message: "Username is required", errorType: "BadRequest", code: 400};
             }
 
-            const chatIdResponse =  await this.db.getChatIdBySessionId(sessionUsername);
+            const chatIdResponse = await this.db.getChatIdBySessionId(sessionUsername);
 
             console.log("ChatID retrieved: ", chatIdResponse?.chatId);
 
