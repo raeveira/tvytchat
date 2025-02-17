@@ -46,7 +46,6 @@ export default async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-
     // Allow auth routes without authentication
     if (routes.auth.some(route => pathMatchesRoute(path, route))) {
         console.log("AUTH ROUTE")
@@ -76,6 +75,8 @@ export default async function middleware(request: NextRequest) {
             // User is authenticated, redirect to dashboard if on an auth route
             if (routes.auth.some(route => pathMatchesRoute(path, route))) {
                 return NextResponse.redirect(new URL('/dashboard', request.url));
+            } else {
+                return NextResponse.next();
             }
         }
     } catch (error) {
