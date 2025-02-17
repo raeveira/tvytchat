@@ -15,6 +15,11 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
+    // Allow auth routes without authentication
+    if (routes.auth.some(route => path.startsWith(route))) {
+        return NextResponse.next();
+    }
+
     // Validate token with backend API for all other routes
     try {
         const response = await fetch('https://tvytapi.raeveira.nl/api/auth/check-token', {
@@ -45,7 +50,8 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    return NextResponse.next();
+    // Deny all other routes without authentication
+    return NextResponse.redirect(new URL('/login', request.url));
 }
 
 export const config = {
