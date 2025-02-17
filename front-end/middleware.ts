@@ -2,7 +2,7 @@ import type {NextRequest} from 'next/server';
 import {NextResponse} from 'next/server';
 import routes from '@/routes.json';
 
-export async function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
 
     // Allow API routes without authentication
