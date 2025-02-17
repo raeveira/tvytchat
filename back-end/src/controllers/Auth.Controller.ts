@@ -295,11 +295,15 @@ export class AuthController {
 
         const authenticated = await this.authConfig.checkAuth(req);
 
+        console.log("Authenticated: ", authenticated);
+
         if (!authenticated.isAuthenticated) {
             return res.status(authenticated.code).send(authenticated.message);
         }
 
         const user = authenticated.user;
+
+        console.log("User: ", user);
 
         if (user) {
 
@@ -310,6 +314,8 @@ export class AuthController {
             } else {
                 return {message: "Invalid user data", errorType: "BadRequest", code: 400};
             }
+
+            console.log("SessionUsername: ", sessionUsername);
 
             if (!sessionUsername) {
                 return {message: "Username is required", errorType: "BadRequest", code: 400};
