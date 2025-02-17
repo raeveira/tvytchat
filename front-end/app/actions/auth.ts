@@ -24,8 +24,6 @@ export async function loginUser(formData: FormData) {
             body: JSON.stringify(body),
         });
 
-        console.log(response);
-
         if (response.ok) {
             const cookieStore = await cookies();
             const setCookieHeader = response.headers.get('Set-Cookie');
@@ -41,12 +39,8 @@ export async function loginUser(formData: FormData) {
             const data = await response.json();
 
 
-            console.log(data); // This is not type-safe
-
             // Validate the response data
             const parsedResponse = loginResponseSchema.parse(data);
-
-            console.log(parsedResponse.message); // Now this is type-safe
 
             // Get all response headers
             const responseHeaders = Object.fromEntries(response.headers.entries());

@@ -28,21 +28,15 @@ function pathMatchesRoute(path: string, route: string) {
 }
 
 export default async function middleware(request: NextRequest) {
-    console.log("MIDDLEWARE INITIATED")
-
     const path = request.nextUrl.pathname;
-
-    console.log("PATH:", path)
 
     // Allow API routes without authentication
     if (routes.api.some(route => pathMatchesRoute(path, route))) {
-        console.log("API ROUTE")
         return NextResponse.next();
     }
 
     // Allow public routes without authentication
     if ((routes.public.some(route => pathMatchesRoute(path, route)) && path !== '/dashboard') || path.startsWith('/chat')) {
-        console.log("PUBLIC ROUTE")
         return NextResponse.next();
     }
 
@@ -58,12 +52,12 @@ export default async function middleware(request: NextRequest) {
 
         const {isAuthenticated} = await response.json();
 
-        console.log('isAuthenticated:', isAuthenticated);
-
         if (!response.ok || !isAuthenticated) {
             // User is not authenticated, redirect to login unless already on an auth route
             if (!routes.auth.some(route => pathMatchesRoute(path, route))) {
                 return NextResponse.redirect(new URL('/login', request.url));
+            } else {
+                return NextResponse.next();
             }
         } else {
             // User is authenticated, redirect to dashboard if on an auth route
