@@ -36,10 +36,12 @@ export async function loginUser(formData: FormData) {
 
                     // Set the cookie with its attributes
                     cookieStore.set(key, value, {
+                        domain: attributes.find((attr) => attr.toLowerCase().startsWith('domain'))?.split('=')[1] || '.raeveira.nl',
                         httpOnly: attributes.some((attr) => attr.toLowerCase() === 'httponly'),
                         secure: attributes.some((attr) => attr.toLowerCase() === 'secure'),
                         sameSite: attributes.find((attr) => attr.toLowerCase().startsWith('samesite'))?.split('=')[1]?.toLowerCase() as 'lax' | 'strict' | 'none' || 'none',
                         path: attributes.find((attr) => attr.toLowerCase().startsWith('path'))?.split('=')[1] || '/',
+                        expires: new Date(attributes.find((attr) => attr.toLowerCase().startsWith('expires'))?.split('=')[1] || Date.now() + 1000 * 60 * 60 * 24 * 365), // Default to 1 year
                     });
                 });
             }
