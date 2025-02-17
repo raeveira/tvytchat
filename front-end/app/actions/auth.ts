@@ -1,6 +1,6 @@
 'use server'
 import {loginResponseSchema, loginSchema} from '@/lib/schemas';
-import { cookies } from 'next/headers';
+import {cookies} from 'next/headers';
 
 export async function loginUser(formData: FormData) {
     const emailOrUsername = formData.get('emailOrUsername') as string;
@@ -29,12 +29,21 @@ export async function loginUser(formData: FormData) {
             const setCookieHeader = response.headers.get('Set-Cookie');
 
             if (setCookieHeader) {
-                const cookieParts = setCookieHeader.split(';');
-                cookieParts.forEach((part) => {
-                    const [key, value] = part.trim().split('=');
-                    cookieStore.set(key, value);
+                const cookies = setCookieHeader.split(','); // Split multiple cookies if present
+                cookies.forEach((cookie) => {
+                    const [cookieValue, ...attributes] = cookie.split(';').map((part) => part.trim());
+                    const [key, value] = cookieValue.split('=');
+
+                    // Set the cookie with its attributes
+                    cookieStore.set(key, value, {
+                        httpOnly: attributes.some((attr) => attr.toLowerCase() === 'httponly'),
+                        secure: attributes.some((attr) => attr.toLowerCase() === 'secure'),
+                        sameSite: attributes.find((attr) => attr.toLowerCase().startsWith('samesite'))?.split('=')[1]?.toLowerCase() as 'lax' | 'strict' | 'none' || 'lax',
+                        path: attributes.find((attr) => attr.toLowerCase().startsWith('path'))?.split('=')[1] || '/',
+                    });
                 });
             }
+
 
             const data = await response.json();
 
