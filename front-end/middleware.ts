@@ -1,45 +1,13 @@
 import type {NextRequest} from 'next/server';
 import {NextResponse} from 'next/server';
-import routes from '@/routes.json';
+import {
+    DEFAULT_LOGIN_REDIRECT,
+    apiAuthPrefix,
+    authRoutes,
+    publicRoutes
+} from "@/lib/routes"
 
-// Function to check if a path matches a route pattern
-function pathMatchesRoute(path: string, route: string) {
-    // For exact matches
-    if (path === route) return true;
-
-    // For routes with parameters (e.g., /chat/:id)
-    if (route.includes('/:')) {
-        const routeParts = route.split('/');
-        const pathParts = path.split('/');
-
-        if (routeParts.length > pathParts.length) return false;
-
-        for (let i = 0; i < routeParts.length; i++) {
-            if (routeParts[i] === pathParts[i]) continue;
-            if (routeParts[i].startsWith(':')) continue;
-            return false;
-        }
-
-        return true;
-    }
-
-    // Allow any path that starts with the route
-    return path.startsWith(route);
-}
-
-export default async function middleware(request: NextRequest) {
-    const path = request.nextUrl.pathname;
-
-    // Allow API routes without authentication
-    if (routes.api.some(route => pathMatchesRoute(path, route))) {
-        return NextResponse.next();
-    }
-
-    // Allow public routes without authentication
-    if ((routes.public.some(route => pathMatchesRoute(path, route))) || path.startsWith('/chat')) {
-        return NextResponse.next();
-    }
-
+const checkAuth = async (request: NextRequest) => {
     // Validate token with backend API for all other routes
     try {
         const response = await fetch('https://tvytapi.raeveira.nl/api/auth/check-token', {
@@ -52,30 +20,44 @@ export default async function middleware(request: NextRequest) {
 
         const {isAuthenticated} = await response.json();
 
-        if (!response.ok || !isAuthenticated) {
-            // User is not authenticated, redirect to login unless already on an auth route
-            if (!routes.auth.some(route => pathMatchesRoute(path, route))) {
-                return NextResponse.redirect(new URL('/login', request.url));
-            } else {
-                return NextResponse.next();
-            }
-        } else {
-            // User is authenticated, redirect to dashboard if on an auth route
-            if (routes.auth.some(route => pathMatchesRoute(path, route))) {
-                return NextResponse.redirect(new URL('/dashboard', request.url));
-            } else {
-                return NextResponse.next();
-            }
-        }
+        return isAuthenticated;
     } catch (error) {
         console.error('Token validation error:', error);
         return NextResponse.redirect(new URL('/login', request.url));
     }
+};
 
-    // Deny all other routes without authentication
-    return NextResponse.redirect(new URL('/login', request.url));
+export default async function middleware(request: NextRequest) {
+    const {nextUrl} = request;
+    const isLoggedIn = !!await checkAuth(request);
+
+    const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
+    const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+    const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+
+    if (isApiAuthRoute) {
+        return null;
+    }
+
+    if (isAuthRoute) {
+        if (isLoggedIn) {
+            return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl))
+        }
+        return null;
+    }
+
+    if (!isLoggedIn && !isPublicRoute) {
+        return Response.redirect(new URL("/", nextUrl));
+    }
+
+    return null;
 }
 
 export const config = {
-    matcher: ['/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)'],
-};
+    matcher: [
+        // Skip Next.js internals and all static files, unless found in search params
+        '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+        // Always run for API routes
+        '/(api|trpc)(.*)',
+    ],
+}

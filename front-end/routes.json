@@ -1,5 +1,0 @@
-{
-    "public": ["/chat", "/chat/:id", "/"],
-    "auth": ["/login", "/register"],
-    "api": []
-}
