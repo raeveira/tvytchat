@@ -22,9 +22,12 @@ export async function middleware(request: NextRequest) {
             headers: {
                 'Cookie': request.headers.get('cookie') || ''
             },
+            credentials: 'include',
         });
 
         const {isAuthenticated} = await response.json();
+
+        console.log('isAuthenticated:', isAuthenticated);
 
         if (!response.ok || !isAuthenticated) {
             // User is not authenticated, redirect to login unless already on an auth route
