@@ -38,7 +38,7 @@ export async function loginUser(formData: FormData) {
                     cookieStore.set(key, value, {
                         httpOnly: attributes.some((attr) => attr.toLowerCase() === 'httponly'),
                         secure: attributes.some((attr) => attr.toLowerCase() === 'secure'),
-                        sameSite: attributes.find((attr) => attr.toLowerCase().startsWith('samesite'))?.split('=')[1]?.toLowerCase() as 'lax' | 'strict' | 'none' || 'lax',
+                        sameSite: attributes.find((attr) => attr.toLowerCase().startsWith('samesite'))?.split('=')[1]?.toLowerCase() as 'lax' | 'strict' | 'none' || 'none',
                         path: attributes.find((attr) => attr.toLowerCase().startsWith('path'))?.split('=')[1] || '/',
                     });
                 });

@@ -171,7 +171,7 @@ export class AuthController {
                 .cookie('AuthToken', token, {
                     httpOnly: true,
                     secure: true,
-                    sameSite: 'lax',
+                    sameSite: 'none',
                     path: '/',
                 })
                 .header('Access-Control-Allow-Credentials', 'true')
