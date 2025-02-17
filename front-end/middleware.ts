@@ -3,6 +3,8 @@ import {NextResponse} from 'next/server';
 import routes from '@/routes.json';
 
 export default async function middleware(request: NextRequest) {
+    console.log("MIDDLEWARE INITIATED")
+
     const path = request.nextUrl.pathname;
 
     // Allow API routes without authentication
