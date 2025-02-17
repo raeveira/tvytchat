@@ -31,16 +31,9 @@ export default async function middleware(request: NextRequest) {
     const {nextUrl} = request;
     const isLoggedIn = !!await checkAuth(request);
 
-    console.log('isLoggedIn:', isLoggedIn);
-    console.log('nextUrl:', nextUrl.pathname);
-
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-
-    console.log('isApiAuthRoute:', isApiAuthRoute);
-    console.log('isPublicRoute:', isPublicRoute);
-    console.log('isAuthRoute:', isAuthRoute);
 
     if (isApiAuthRoute) {
         return null;
@@ -56,8 +49,6 @@ export default async function middleware(request: NextRequest) {
     if (!isLoggedIn && !isPublicRoute) {
         return Response.redirect(new URL("/", nextUrl));
     }
-
-    console.log('No redirect needed');
 
     return null;
 }
