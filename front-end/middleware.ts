@@ -46,12 +46,6 @@ export default async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    // Allow auth routes without authentication
-    if (routes.auth.some(route => pathMatchesRoute(path, route))) {
-        console.log("AUTH ROUTE")
-        return NextResponse.next();
-    }
-
     // Validate token with backend API for all other routes
     try {
         const response = await fetch('https://tvytapi.raeveira.nl/api/auth/check-token', {
