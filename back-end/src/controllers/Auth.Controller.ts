@@ -168,7 +168,7 @@ export class AuthController {
             // Return token
             res.cookie('AuthToken', token, {
                 httpOnly: true,
-                secure: true,
+                secure: false,
                 sameSite: 'lax',
                 path: '/',
             })
