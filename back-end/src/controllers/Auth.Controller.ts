@@ -175,7 +175,7 @@ export class AuthController {
                     path: '/',
                 })
                 .header('Access-Control-Allow-Credentials', 'true')
-                .send({message: 'Login successful', errorType: ''});
+                .json({message: 'Login successful', errorType: ''});
         } catch (error) {
             console.error('Error generating token:', error);
             res.status(500).json({message: 'Internal server error', errorType: 'ServerError'});
