@@ -1,4 +1,3 @@
-'use server'
 import {loginResponseSchema, loginSchema} from '@/lib/schemas';
 
 export async function loginUser(formData: FormData) {
