@@ -7,18 +7,23 @@ export default async function middleware(request: NextRequest) {
 
     const path = request.nextUrl.pathname;
 
+    console.log("PATH:", path)
+
     // Allow API routes without authentication
     if (routes.api.some(route => path.startsWith(route))) {
+        console.log("API ROUTE")
         return NextResponse.next();
     }
 
     // Allow public routes without authentication
     if (routes.public.some(route => path.startsWith(route))) {
+        console.log("PUBLIC ROUTE")
         return NextResponse.next();
     }
 
     // Allow auth routes without authentication
     if (routes.auth.some(route => path.startsWith(route))) {
+        console.log("AUTH ROUTE")
         return NextResponse.next();
     }
 
