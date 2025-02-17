@@ -31,6 +31,8 @@ export default async function middleware(request: NextRequest) {
     const {nextUrl} = request;
     const isLoggedIn = !!await checkAuth(request);
 
+    console.log('isLoggedIn:', isLoggedIn);
+
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
