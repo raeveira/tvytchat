@@ -1,6 +1,5 @@
 'use server'
 import {loginResponseSchema, loginSchema} from '@/lib/schemas';
-import {headers} from "next/headers";
 
 export async function loginUser(formData: FormData) {
     const emailOrUsername = formData.get('emailOrUsername') as string;
