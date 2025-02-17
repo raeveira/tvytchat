@@ -166,17 +166,16 @@ export class AuthController {
             );
 
             // Return token
-            res.cookie('AuthToken', token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'lax',
-                path: '/',
-            });
-
-            // Ensure CORS allows credentials
-            res.header('Access-Control-Allow-Credentials', 'true');
-
-            return res.status(200).send({message: 'Login successful', errorType: ''});
+            return res
+                .status(200)
+                .send({message: 'Login successful', errorType: ''})
+                .cookie('AuthToken', token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'lax',
+                    path: '/',
+                })
+                .header('Access-Control-Allow-Credentials', 'true');
         } catch (error) {
             console.error('Error generating token:', error);
             res.status(500).json({message: 'Internal server error', errorType: 'ServerError'});
