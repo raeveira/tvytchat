@@ -168,14 +168,14 @@ export class AuthController {
             // Return token
             return res
                 .status(200)
-                .send({message: 'Login successful', errorType: ''})
                 .cookie('AuthToken', token, {
                     httpOnly: true,
                     secure: true,
                     sameSite: 'lax',
                     path: '/',
                 })
-                .header('Access-Control-Allow-Credentials', 'true');
+                .header('Access-Control-Allow-Credentials', 'true')
+                .send({message: 'Login successful', errorType: ''});
         } catch (error) {
             console.error('Error generating token:', error);
             res.status(500).json({message: 'Internal server error', errorType: 'ServerError'});
