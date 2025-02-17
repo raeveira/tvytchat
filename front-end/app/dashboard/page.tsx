@@ -20,9 +20,13 @@ export default function Page() {
         const fetchChatId = async () => {
             try {
                 const response = await fetch('https://tvytapi.raeveira.nl/api/auth/retrieve-chatId', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                     credentials: 'include',
                 });
                 const data = await response.json();
+                console.log('ChatId data:', data);
                 setChatId(data.chatId);
             } catch (error) {
                 console.error('Failed to retrieve chatId:', error);
