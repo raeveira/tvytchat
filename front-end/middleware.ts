@@ -24,9 +24,7 @@ function pathMatchesRoute(path: string, route: string) {
     }
 
     // Allow any path that starts with the route
-    if (path.startsWith(route)) return true;
-
-    return false;
+    return path.startsWith(route);
 }
 
 export default async function middleware(request: NextRequest) {
@@ -43,7 +41,7 @@ export default async function middleware(request: NextRequest) {
     }
 
     // Allow public routes without authentication
-    if (routes.public.some(route => pathMatchesRoute(path, route)) || path.startsWith('/chat')) {
+    if ((routes.public.some(route => pathMatchesRoute(path, route)) && path !== '/dashboard') || path.startsWith('/chat')) {
         console.log("PUBLIC ROUTE")
         return NextResponse.next();
     }
