@@ -1,5 +1,6 @@
 'use server'
 import {loginResponseSchema, loginSchema} from '@/lib/schemas';
+import {headers} from "next/headers";
 
 export async function loginUser(formData: FormData) {
     const emailOrUsername = formData.get('emailOrUsername') as string;
@@ -34,7 +35,16 @@ export async function loginUser(formData: FormData) {
             const parsedResponse = loginResponseSchema.parse(data);
 
             console.log(parsedResponse.message); // Now this is type-safe
-            return {success: true, data: parsedResponse};
+
+            // Get all response headers
+            const responseHeaders = Object.fromEntries(response.headers.entries());
+
+            return Promise.resolve({
+                message: parsedResponse.message,
+                errorType: parsedResponse.errorType,
+                headers: responseHeaders
+            });
+
         } else {
             return {error: 'Invalid credentials'};
         }
