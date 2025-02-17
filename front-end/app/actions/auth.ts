@@ -1,5 +1,6 @@
 'use server'
 import {loginResponseSchema, loginSchema} from '@/lib/schemas';
+import { cookies } from 'next/headers';
 
 export async function loginUser(formData: FormData) {
     const emailOrUsername = formData.get('emailOrUsername') as string;
@@ -26,7 +27,19 @@ export async function loginUser(formData: FormData) {
         console.log(response);
 
         if (response.ok) {
+            const cookieStore = await cookies();
+            const setCookieHeader = response.headers.get('Set-Cookie');
+
+            if (setCookieHeader) {
+                const cookieParts = setCookieHeader.split(';');
+                cookieParts.forEach((part) => {
+                    const [key, value] = part.trim().split('=');
+                    cookieStore.set(key, value);
+                });
+            }
+
             const data = await response.json();
+
 
             console.log(data); // This is not type-safe
 
