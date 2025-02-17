@@ -36,7 +36,7 @@ export default async function middleware(request: NextRequest) {
     }
 
     // Allow public routes without authentication
-    if ((routes.public.some(route => pathMatchesRoute(path, route)) && path !== '/dashboard') || path.startsWith('/chat')) {
+    if ((routes.public.some(route => pathMatchesRoute(path, route)) && path == '/') || path.startsWith('/chat')) {
         return NextResponse.next();
     }
 
